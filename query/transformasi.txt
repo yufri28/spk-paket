@@ -1,0 +1,325 @@
+<?php 
+// transformasi
+return $this->db->query(
+        "SELECT a.nama_alternatif, a.id_alternatif,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+        MAX(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END) AS C6,
+        MAX(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END) AS C7,
+        MAX(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END) AS C8,
+        MAX(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END) AS C9
+        FROM alternatif a
+        JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+        WHERE kak.f_id_periode = '$id_periode'
+        GROUP BY a.nama_alternatif");
+
+
+// max min
+return $this->db->query("SELECT a.nama_alternatif, a.id_alternatif,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+        MAX(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END) AS C6,
+        MAX(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END) AS C7,
+        MAX(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END) AS C8,
+        MAX(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END) AS C9
+        FROM alternatif a
+        JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+        GROUP BY a.nama_alternatif
+        UNION ALL
+        SELECT 'min', NULL,
+        MIN(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MIN(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MIN(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+        MIN(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END) AS C6,
+        MIN(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END) AS C7,
+        MIN(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END) AS C8,
+        MIN(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END) AS C9
+        FROM alternatif a
+        JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+        UNION ALL
+        SELECT 'max', NULL,
+        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
+        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
+        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
+        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
+        MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) AS C5,
+        MAX(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END) AS C6,
+        MAX(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END) AS C7,
+        MAX(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END) AS C8,
+        MAX(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END) AS C9
+        FROM alternatif a
+        JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria;");
+
+
+// Utilitas
+return $this->db->query("SELECT a.nama_alternatif, a.id_alternatif,
+            SELECT a.nama_alternatif, a.id_alternatif,
+            (MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C1,
+            (MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C2,
+            (MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C3,
+            (MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C4,
+            (MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C5,
+            (MAX(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C6,
+            (MAX(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C7,
+            (MAX(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C8,
+            (MAX(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)) AS utilitas_C9
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+            WHERE kak.f_id_periode = '$id_periode'
+            GROUP BY a.nama_alternatif;");
+
+
+// Perhitungan Preferensi
+return $this->db->query("SELECT a.nama_alternatif, a.id_alternatif, 
+            ((($c1/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))) + 
+            (($c2/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))) +
+            (($c3/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))) +
+            (($c4/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))) + 
+            (($c5/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C5' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))) +
+            (($c6/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C6' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))) +
+            (($c7/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C7' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))) +
+            (($c8/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C8' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))) + 
+            (($c9/($c1+$c2+$c3+$c4+$c5+$c6+$c7+$c8+$c9)) * (MAX(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria))/((SELECT MAX(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria) - (SELECT MIN(CASE WHEN k.id_kriteria = 'C9' THEN sk.bobot_sub_kriteria END)
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria)))) AS preferensi
+            
+            FROM alternatif a
+            JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
+            JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
+            JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
+            JOIN periode per ON per.id_periode = kak.f_id_periode
+            WHERE kak.f_id_periode = '$id_periode'
+            GROUP BY a.nama_alternatif ORDER BY preferensi DESC;");
+?>
