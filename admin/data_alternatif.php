@@ -10,11 +10,6 @@ $dataSubC1 = $Alternatif->getSubC1();
 $dataSubC2 = $Alternatif->getSubC2();
 $dataSubC3 = $Alternatif->getSubC3();
 $dataSubC4 = $Alternatif->getSubC4();
-$dataSubC5 = $Alternatif->getSubC5();
-$dataSubC6 = $Alternatif->getSubC6();
-$dataSubC7 = $Alternatif->getSubC7();
-$dataSubC8 = $Alternatif->getSubC8();
-$dataSubC9 = $Alternatif->getSubC9();
 
 $usulkanDataAlt = [];
 $usulkanDataAltKriteria = [];
@@ -361,8 +356,7 @@ Swal.fire({
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered nowrap" id="dataKepalaKeluarga" style="width:100%"
-                                cellspacing="0">
+                            <table class="table table-bordered nowrap" id="table" style="width:100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>No</th>

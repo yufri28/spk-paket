@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             Login
                                         </button>
                                         <div class="col-12 d-flex justify-content-center">
-                                            <a href="">Kembali ke Beranda</a>
+                                            <a href="../home.php">Kembali ke Beranda</a>
                                         </div>
                                     </form>
                                 </div>

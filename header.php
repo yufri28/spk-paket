@@ -33,7 +33,11 @@
                             href="./pembobotan.php">Pembobotan</a>
                     </li>
                     <li class="nav-item">
+                        <?php if(isset($_SESSION['login'])):?>
+                        <a class="nav-link" href="./auth/logout.php">Logout</a>
+                        <?php else:?>
                         <a class="nav-link" href="./auth/login.php">Login</a>
+                        <?php endif;?>
                     </li>
                 </ul>
             </div>
