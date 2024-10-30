@@ -142,7 +142,7 @@ Swal.fire({
                     </div>
                     <div class="card-body">
                         <div class="">
-                            <label for="spesifikasi" class="form-label2">Spesifikasi
+                            <label for="spesifikasi" class="form-label">Spesifikasi
                                 <small class="text-danger">*</small></label>
                             <input class="form-control" required name="spesifikasi" type="text"
                                 placeholder="Spesifikasi" value="<?=$sub_kriteria['spesifikasi'];?>"
@@ -151,22 +151,11 @@ Swal.fire({
                     </div>
                     <div class="card-body">
                         <div class="">
-                            <label for="bobot_sub_kriteria" class="form-label">Bobot SubKriteria <small
-                                    class="text-danger">*</small></label>
-                            <select class="form-control" required id="bobot_sub_kriteria" name="bobot_sub_kriteria"
-                                aria-label="Default select example">
-                                <option value="">-- Pilih Bobot --</option>
-                                <option <?=$sub_kriteria['bobot_sub_kriteria'] == 1 ? "selected":"";?> value="1">1
-                                </option>
-                                <option <?=$sub_kriteria['bobot_sub_kriteria'] == 2 ? "selected":"";?> value="2">2
-                                </option>
-                                <option <?=$sub_kriteria['bobot_sub_kriteria'] == 3 ? "selected":"";?> value="3">3
-                                </option>
-                                <option <?=$sub_kriteria['bobot_sub_kriteria'] == 4 ? "selected":"";?> value="4">4
-                                </option>
-                                <option <?=$sub_kriteria['bobot_sub_kriteria'] == 5 ? "selected":"";?> value="5">5
-                                </option>
-                            </select>
+                            <label for="bobot_sub_kriteria" class="form-label">Bobot
+                                <small class="text-danger">*</small></label>
+                            <input class="form-control" required name="bobot_sub_kriteria" type="number"
+                                placeholder="Bobot" aria-label="default input example"
+                                value="<?=$sub_kriteria['bobot_sub_kriteria'];?>">
                         </div>
                     </div>
                     <div class="card-body">

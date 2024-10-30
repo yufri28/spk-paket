@@ -34,7 +34,7 @@ ini_set('display_errors', 1);
 function errorHandler($errno, $errstr, $errfile, $errline) {
     // Log kesalahan
     error_log("Error [$errno]: $errstr in $errfile on line $errline");
-    echo "<script>alert('Terjadi kesalahan. Kesalahan tersebut disebabkan oleh data alternatif yang belum lengkap. Silahkan hubungi admin untuk melengkapi!'); window.location.href = './index.php';</script>";
+    echo "<script>alert('Terjadi kesalahan. Kesalahan tersebut disebabkan oleh data alternatif yang belum lengkap / konsep gedung yang anda pilih tidak tersedia!'); window.location.href = './index.php';</script>";
     exit;
 }
 
@@ -64,7 +64,7 @@ if (isset($_POST['hasil-perengkingan'])) {
     $alternatif = array();
     $detail = array();
     
-    $sql = 'SELECT * FROM alternatif';
+    $sql = "SELECT * FROM alternatif ";
     
     if($konsep_gedung != null){
       $sql .= "WHERE konsep_gedung ='".$konsep_gedung."'";
@@ -236,7 +236,7 @@ if (isset($_POST['hasil-perengkingan'])) {
       // -rumus untuk matriks keputusan
       //-- inisialisasi variabel array id_alternatif+alternatif untuk matriks keputusan
       $alternatif1 = array();
-      $sql = 'SELECT * FROM alternatif';
+      $sql = "SELECT * FROM alternatif ";
       if($konsep_gedung != null){
         $sql .= "WHERE konsep_gedung ='".$konsep_gedung."'";
       }
