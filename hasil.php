@@ -285,10 +285,6 @@ if (isset($_POST['hasil-perengkingan'])) {
 
   ob_end_flush();
 }
-
-
-
-
 ?>
 
 <!-- Section: Design Block -->
