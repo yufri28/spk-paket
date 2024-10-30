@@ -6,10 +6,7 @@ require_once './header.php';
 require_once './functions/data_alternatif.php';
 
 $dataAlternatif = $Alternatif->getAlternatif();
-$dataSubC1 = $Alternatif->getSubC1();
-$dataSubC2 = $Alternatif->getSubC2();
-$dataSubC3 = $Alternatif->getSubC3();
-$dataSubC4 = $Alternatif->getSubC4();
+$dataKriteria = $Alternatif->getKriteria();
 
 $usulkanDataAlt = [];
 $usulkanDataAltKriteria = [];
@@ -21,6 +18,13 @@ $subC4 = 0;
 
 // tambah alternatif
 if(isset($_POST['tambah'])){
+
+    $dataKecAltKrit = [];
+    
+    foreach ($dataKriteria as $key => $value) {
+        $dataKecAltKrit[$value['id_kriteria']] = $_POST[$value['id_kriteria']];
+    }
+
     $nama_alternatif = htmlspecialchars($_POST['nama_alternatif']);
     $alamat = htmlspecialchars($_POST['alamat']);
     $konsep_gedung = htmlspecialchars($_POST['konsep_gedung']);
@@ -53,114 +57,16 @@ if(isset($_POST['tambah'])){
 
         // Pindahkan file gambar dari lokasi sementara ke lokasi tujuan
         if (move_uploaded_file($lokasiSementara, $targetFilePath)) {
-            $C1 = cleanRupiah(htmlspecialchars($_POST['harga_sewa']));
-            $C2 = cleanRupiah(htmlspecialchars($_POST['fasilitas']));
-            $C3 = cleanRupiah(htmlspecialchars($_POST['kapasitas_tamu']));
-            $C4 = cleanRupiah(htmlspecialchars($_POST['kapasitas_parkir']));
             
-            // Harga sewa
-            foreach ($dataSubC1 as $value) {
-                switch (true) {
-                    case $C1 > 148000 && $value['bobot_sub_kriteria'] == 5:
-                        $subC1 = $value['id_sub_kriteria'];
-                        break;
-                    case $C1 > 112000 && $C1 <= 148000 && $value['bobot_sub_kriteria'] == 4:
-                        $subC1 = $value['id_sub_kriteria'];
-                        break;
-                    case $C1 > 76000 && $C1 <= 112000 && $value['bobot_sub_kriteria'] == 3:
-                        $subC1 = $value['id_sub_kriteria'];
-                        break;
-                    case $C1 > 40000 && $C1 <= 76000 && $value['bobot_sub_kriteria'] == 2:
-                        $subC1 = $value['id_sub_kriteria'];
-                        break;
-                    case $C1 <= 40000 && $value['bobot_sub_kriteria'] == 1:
-                        $subC1 = $value['id_sub_kriteria'];
-                        break;
-                }
-            }
-
-            // Fasilitas
-            foreach ($dataSubC2 as $value) {
-                switch (true) {
-                    case $C2 > 12 && $value['bobot_sub_kriteria'] == 5:
-                        $subC2 = $value['id_sub_kriteria'];
-                        break;
-                    case $C2 >= 10 && $C2 <= 12 && $value['bobot_sub_kriteria'] == 4:
-                        $subC2 = $value['id_sub_kriteria'];
-                        break;
-                    case $C2 >= 7 && $C2 <= 9 && $value['bobot_sub_kriteria'] == 3:
-                        $subC2 = $value['id_sub_kriteria'];
-                        break;
-                    case $C2 >= 4 && $C2 <= 6 && $value['bobot_sub_kriteria'] == 2:
-                        $subC2 = $value['id_sub_kriteria'];
-                        break;
-                    case $C2 <= 3 && $value['bobot_sub_kriteria'] == 1:
-                        $subC2 = $value['id_sub_kriteria'];
-                        break;
-                }
-            }
-
-            // Kapasitas Tamu
-            foreach ($dataSubC3 as $value) {
-                switch (true) {
-                    case $C3 > 1323 && $value['bobot_sub_kriteria'] == 5:
-                        $subC3 = $value['id_sub_kriteria'];
-                        break;
-                    case $C3 >= 983 && $C3 <= 1323 && $value['bobot_sub_kriteria'] == 4:
-                        $subC3 = $value['id_sub_kriteria'];
-                        break;
-                    case $C3 >= 642 && $C3 <= 982 && $value['bobot_sub_kriteria'] == 3:
-                        $subC3 = $value['id_sub_kriteria'];
-                        break;
-                    case $C3 >= 301 && $C3 <= 641 && $value['bobot_sub_kriteria'] == 2:
-                        $subC3 = $value['id_sub_kriteria'];
-                        break;
-                    case $C3 <= 300 && $value['bobot_sub_kriteria'] == 1:
-                        $subC3 = $value['id_sub_kriteria'];
-                        break;
-                }
-            }
-            // Kapasitas Parkir
-            foreach ($dataSubC4 as $value) {
-                switch (true) {
-                    case $C4 > 143 && $value['bobot_sub_kriteria'] == 5:
-                        $subC4 = $value['id_sub_kriteria'];
-                        break;
-                    case $C4 >= 113 && $C4 <= 143 && $value['bobot_sub_kriteria'] == 4:
-                        $subC4 = $value['id_sub_kriteria'];
-                        break;
-                    case $C4 >= 82 && $C4 <= 112 && $value['bobot_sub_kriteria'] == 3:
-                        $subC4 = $value['id_sub_kriteria'];
-                        break;
-                    case $C4 >= 51 && $C4 <= 81 && $value['bobot_sub_kriteria'] == 2:
-                        $subC4 = $value['id_sub_kriteria'];
-                        break;
-                    case $C4 <= 50 && $value['bobot_sub_kriteria'] == 1:
-                        $subC4 = $value['id_sub_kriteria'];
-                        break;
-                }
-            }
-
-
             $dataAlternatif = [
                 'nama_alternatif' => $nama_alternatif,
                 'gambar' => $namaFile,
                 'alamat' => $alamat,
                 'latitude' => $latitude,
                 'longitude' => $longitude,
-                'konsep_gedung' => $konsep_gedung,
-                'harga_sewa' => $C1,
-                'fasilitas' => $C2,
-                'kapasitas_tamu' => $C3,
-                'kapasitas_parkir' => $C4
+                'konsep_gedung' => $konsep_gedung
             ];
             
-            $dataKecAltKrit = [
-                'C1' => $subC1,
-                'C2' => $subC2,
-                'C3' => $subC3,
-                'C4' => $subC4
-            ];
             $Alternatif->addDataAlternatif($dataAlternatif,$dataKecAltKrit);
         } else {
             return $_SESSION['error'] = 'Tidak ada data yang dikirim!';
@@ -262,38 +168,25 @@ Swal.fire({
                                         placeholder="Longitude" />
                                 </div>
                             </div>
+                            <?php foreach ($dataKriteria as $key => $value) :?>
+                            <?php 
+                                    $selectSub = $koneksi->query("SELECT * FROM sub_kriteria WHERE f_id_kriteria='".$value['id_kriteria']."'");
+                                    ?>
                             <div class="card-body">
                                 <div class="d-lg-flex">
-                                    <label for="harga_sewa" class="form-label col-lg-2">Harga Sewa <small
-                                            class="text-danger">*</small></label>
-                                    <input type="text" class="form-control" name="harga_sewa" id="harga_sewa" required
-                                        placeholder="Harga Sewa" />
+                                    <label for="<?=$value['id_kriteria'];?>"
+                                        class="form-label col-lg-2"><?=$value['nama_kriteria'];?>
+                                        <small class="text-danger">*</small></label>
+                                    <select class="form-control" name="<?=$value['id_kriteria'];?>"
+                                        id="<?=$value['id_kriteria'];?>" required>
+                                        <option value="">-- Pilih <?=$value['nama_kriteria'];?> --</option>
+                                        <?php foreach($selectSub as $key => $sub):?>
+                                        <option value="<?=$sub['id_sub_kriteria'];?>"><?=$sub['spesifikasi'];?></option>
+                                        <?php endforeach;?>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="card-body">
-                                <div class="d-lg-flex">
-                                    <label for="fasilitas" class="form-label col-lg-2">Fasilitas <small
-                                            class="text-danger">*</small></label>
-                                    <input type="text" class="form-control" name="fasilitas" id="fasilitas" required
-                                        placeholder="Fasilitas" />
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-lg-flex">
-                                    <label for="kapasitas_tamu" class="form-label col-lg-2">Kapasitas Tamu <small
-                                            class="text-danger">*</small></label>
-                                    <input type="text" class="form-control" name="kapasitas_tamu" id="kapasitas_tamu"
-                                        required placeholder="Kapasitas Tamu" />
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-lg-flex">
-                                    <label for="kapasitas_parkir" class="form-label col-lg-2">Kapasitas Parkir <small
-                                            class="text-danger">*</small></label>
-                                    <input type="text" class="form-control" name="kapasitas_parkir"
-                                        id="kapasitas_parkir" required placeholder="Kapasitas Parkir" />
-                                </div>
-                            </div>
+                            <?php endforeach;?>
                             <div class="card-body">
                                 <div class="d-lg-flex">
                                     <label for="konsep_gedung" class="form-label col-lg-2">Konsep Gedung <small
@@ -328,25 +221,31 @@ Swal.fire({
 <?php require_once './footer.php';?>
 
 <script>
+<?php foreach ($dataKriteria as $key => $value) :?>
+document.getElementById('<?=$value['id_kriteria'];?>').addEventListener('keyup', function(e) {
+    <?=$value['id_kriteria'];?>.value = formatAngka(this.value);
+});
+<?php endforeach; ?>
+
 /* Dengan Rupiah */
-var harga_sewa = document.getElementById('harga_sewa');
-harga_sewa.addEventListener('keyup', function(e) {
-    harga_sewa.value = formatRupiah(this.value, 'Rp');
-});
+// var harga_sewa = document.getElementById('harga_sewa');
+// harga_sewa.addEventListener('keyup', function(e) {
+//     harga_sewa.value = formatRupiah(this.value, 'Rp');
+// });
 
-var fasilitas = document.getElementById('fasilitas');
-fasilitas.addEventListener('keyup', function(e) {
-    fasilitas.value = formatAngka(this.value);
-});
+// var fasilitas = document.getElementById('fasilitas');
+// fasilitas.addEventListener('keyup', function(e) {
+//     fasilitas.value = formatAngka(this.value);
+// });
 
-var kapasitas_tamu = document.getElementById('kapasitas_tamu');
-kapasitas_tamu.addEventListener('keyup', function(e) {
-    kapasitas_tamu.value = formatAngka(this.value);
-});
-var kapasitas_parkir = document.getElementById('kapasitas_parkir');
-kapasitas_parkir.addEventListener('keyup', function(e) {
-    kapasitas_parkir.value = formatAngka(this.value);
-});
+// var kapasitas_tamu = document.getElementById('kapasitas_tamu');
+// kapasitas_tamu.addEventListener('keyup', function(e) {
+//     kapasitas_tamu.value = formatAngka(this.value);
+// });
+// var kapasitas_parkir = document.getElementById('kapasitas_parkir');
+// kapasitas_parkir.addEventListener('keyup', function(e) {
+//     kapasitas_parkir.value = formatAngka(this.value);
+// });
 
 /* Fungsi */
 function formatRupiah(angka, prefix) {

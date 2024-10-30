@@ -5,6 +5,20 @@ unset($_SESSION['active-menu']);
 $_SESSION['active-menu'] = 'home';
 
 $alternatif = $koneksi->query("SELECT * FROM alternatif");
+$dataKriteria = $koneksi->query("SELECT * FROM kriteria");
+$getKecAltKrit = $koneksi->query("SELECT *
+                FROM kec_alt_kriteria kac 
+                JOIN sub_kriteria sk ON sk.id_sub_kriteria=kac.f_id_sub_kriteria 
+                JOIN kriteria k ON k.id_kriteria=kac.f_id_kriteria
+                ORDER BY kac.f_id_alternatif, kac.f_id_kriteria;");
+
+while ($row = $getKecAltKrit->fetch_object()) {
+    $i = $row->f_id_alternatif;
+    $j = $row->f_id_kriteria;
+    $aij = $row->spesifikasi;
+  
+    $nilai1[$i][$j] = $aij;
+  }
 ?>
 
 <?php require './header.php';?>
@@ -64,16 +78,10 @@ $alternatif = $koneksi->query("SELECT * FROM alternatif");
                             <ul class="list-group">
                                 <li class="list-group-item"><strong>Konsep Gedung:</strong>
                                     <?=$value['konsep_gedung'];?></li>
-                                <li class="list-group-item"><strong>Harga Sewa:</strong>
-                                    Rp<?=number_format($value['harga_sewa'], 0, ',', '.');?></li>
-                                <li class="list-group-item"><strong>Fasilitas:</strong> <?=$value['fasilitas'];?>
-                                    Fasilitas</li>
-                                <li class="list-group-item"><strong>Kapasitas Tamu:</strong>
-                                    <?=$value['kapasitas_tamu'];?> orang
-                                </li>
-                                <li class="list-group-item"><strong>Kapasitas Parkir:</strong>
-                                    <?=$value['kapasitas_parkir'];?>
-                                    kendaraan</li>
+                                <?php foreach ($dataKriteria as $key => $kriteria):?>
+                                <li class="list-group-item"><strong><?=$kriteria['nama_kriteria'];?>:</strong>
+                                    <?=$nilai1[$value['id_alternatif']][$kriteria['id_kriteria']]??'-';?></li>
+                                <?php endforeach;?>
                             </ul>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 <?php 
+
 session_start();
 require_once './config.php';
 
@@ -25,206 +26,269 @@ if (!isset($_POST['hasil-perengkingan'])) {
     exit;
 }
 
+// Aktifkan error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-$data_alternatif = $koneksi->query(
-    "SELECT a.nama_alternatif, a.id_alternatif, a.gambar, 
-        a.alamat, a.latitude, a.longitude,a.konsep_gedung,a.harga_sewa,a.fasilitas,
-        a.kapasitas_tamu, a.kapasitas_parkir,
-        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
-        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
-        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
-        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
-        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.nama_sub_kriteria END) AS nama_C1,
-        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.nama_sub_kriteria END) AS nama_C2,
-        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.nama_sub_kriteria END) AS nama_C3,
-        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.nama_sub_kriteria END) AS nama_C4
-        FROM alternatif a
-        JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
-        GROUP BY a.nama_alternatif
-        UNION ALL
-        SELECT 'min', NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,
-        MIN(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
-        MIN(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
-        MIN(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
-        MIN(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
-        NULL AS nama_C1,
-        NULL AS nama_C2,
-        NULL AS nama_C3,
-        NULL AS nama_C4
-        FROM alternatif a
-        JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria
-        UNION ALL
-        SELECT 'max', NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,
-        MAX(CASE WHEN k.id_kriteria = 'C1' THEN sk.bobot_sub_kriteria END) AS C1,
-        MAX(CASE WHEN k.id_kriteria = 'C2' THEN sk.bobot_sub_kriteria END) AS C2,
-        MAX(CASE WHEN k.id_kriteria = 'C3' THEN sk.bobot_sub_kriteria END) AS C3,
-        MAX(CASE WHEN k.id_kriteria = 'C4' THEN sk.bobot_sub_kriteria END) AS C4,
-        NULL AS nama_C1,
-        NULL AS nama_C2,
-        NULL AS nama_C3,
-        NULL AS nama_C4
-        FROM alternatif a
-        JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
-        JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
-        JOIN kriteria k ON kak.f_id_kriteria = k.id_kriteria;
-");
+// Fungsi untuk menangkap kesalahan
+function errorHandler($errno, $errstr, $errfile, $errline) {
+    // Log kesalahan
+    error_log("Error [$errno]: $errstr in $errfile on line $errline");
+    echo "<script>alert('Terjadi kesalahan. Kesalahan tersebut disebabkan oleh data alternatif yang belum lengkap. Silahkan hubungi admin untuk melengkapi!'); window.location.href = './index.php';</script>";
+    exit;
+}
 
-$konsep_gedung = null;
-$normalized_harga_sewa = 0;
-$normalized_fasilitas = 0;
-$normalized_kapasitas_tamu = 0;
-$normalized_kapasitas_parkir = 0;
-$C1_min = 0; 
-$C1_max = 0; 
-$C2_min = 0; 
-$C2_max = 0; 
-$C3_min = 0; 
-$C3_max = 0; 
-$C4_min = 0;
-$C4_max = 0;
+set_error_handler('errorHandler');
+
 
 if (isset($_POST['hasil-perengkingan'])) {
-    // Sanitize and cast inputs
-    $konsep_gedung = htmlspecialchars($_POST['konsep_gedung']);
-    $harga_sewa = floatval($_POST['harga_sewa']);
-    $fasilitas = floatval($_POST['fasilitas']);
-    $kapasitas_tamu = floatval($_POST['kapasitas_tamu']);
-    $kapasitas_parkir = floatval($_POST['kapasitas_parkir']);
+  ob_start();
+  try {
+     $konsep_gedung = null;  
+      $dataBobotKriteria = [];
+      $w = [];
+      // Sanitize and cast inputs
+      if(isset($_POST['konsep_gedung'])){
+        $konsep_gedung = htmlspecialchars($_POST['konsep_gedung']);
+      }
+      foreach ($data_kriteria as $key => $value) {
+          $dataBobotKriteria[$value['id_kriteria']] = $_POST[$value['id_kriteria']];
+      }
+
+      for ($i=1; $i <= count($dataBobotKriteria); $i++) { 
+        array_push($w, $dataBobotKriteria['C'.$i] / array_sum($dataBobotKriteria));
+      }
+
     
-    // Calculate the total sum once to avoid repetition
-    $total = $harga_sewa + $fasilitas + $kapasitas_tamu + $kapasitas_parkir;
-
-    if ($total > 0) {
-        // Normalize each criterion
-        $normalized_harga_sewa = $harga_sewa / $total;
-        $normalized_fasilitas = $fasilitas / $total;
-        $normalized_kapasitas_tamu = $kapasitas_tamu / $total;
-        $normalized_kapasitas_parkir = $kapasitas_parkir / $total;
-    } else {
-       
-        echo "
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Harap periksa kembali inputan anda!',
-                confirmButtonText: 'OK'
-            }).then(function(result) {
-                if (result.isConfirmed) {
-                    window.location.href = './pembobotan.php';
-                }
-            });
-        </script>
-        ";
+    //-- inisialisasi variabel array alternatif , dan jumlah alternatif
+    $alternatif = array();
+    $detail = array();
+    
+    $sql = 'SELECT * FROM alternatif';
+    
+    if($konsep_gedung != null){
+      $sql .= "WHERE konsep_gedung ='".$konsep_gedung."'";
     }
-}
+    
+    $data = $koneksi->query($sql);  
+    while ($row = $data->fetch_assoc()) {
+        // Store alternative names
+        $alternatif[] = $row['nama_alternatif'];
+        
+        // Store entire row data as details
+        $detail[] = $row;
+    }
 
+    
+    // $n_subject = count($alternatif);
+    $n_subject = $data->num_rows;
+    
+    // print_r($n_subject);
+    //-- inisialisasi variabel array kriteria dan bobot (W), dan jumlah kriteria
+    $kriteria = array();
+    $sql_kriteria = 'SELECT * FROM kriteria';
+    $data = $koneksi->query($sql_kriteria);
+    while ($row = $data->fetch_object()) {
+      $id_kriteria[] = $row->id_kriteria;
+      $kriteria[] = $row->nama_kriteria;
+      $type[] = $row->jenis_kriteria;
+    }
 
-// Fetch all rows into an array first
-$data_alternatif_rows = [];
-while ($row = mysqli_fetch_assoc($data_alternatif)) {
-    if($row['nama_alternatif'] != 'min' && $row['nama_alternatif'] != 'max'){
-        if($konsep_gedung != null){
-            if($row['konsep_gedung'] == $konsep_gedung){
-                $data_alternatif_rows[] = $row;
-            }
-        }else{
-            $data_alternatif_rows[] = $row;
+    // $w = [0.2125, 0.225 , 0.2, 0.175];
+    
+    $n_criteria = count($kriteria);
+
+    // -- ambil nilai dari tabel
+    $value = array();
+    $sql = "SELECT a.id_alternatif, b.id_kriteria, 
+          IFNULL(c.bobot_sub_kriteria, 0) AS nilai
+          FROM alternatif a 
+          CROSS JOIN kriteria b 
+          CROSS JOIN sub_kriteria c ON b.id_kriteria = c.f_id_kriteria 
+          CROSS JOIN kec_alt_kriteria kac ON a.id_alternatif = kac.f_id_alternatif 
+                                          AND b.id_kriteria = kac.f_id_kriteria 
+                                          AND c.id_sub_kriteria = kac.f_id_sub_kriteria ";
+    if($konsep_gedung != null){
+        $sql .= "WHERE a.konsep_gedung = '".$konsep_gedung."' ";
+    }
+
+    $sql .= "ORDER BY a.id_alternatif, b.id_kriteria, c.id_sub_kriteria;";
+
+    $data = $koneksi->query($sql);
+    while ($row = $data->fetch_object()) {
+      $value[] = $row->nilai;
+    
+    }
+    
+
+    // --normalisasi matriks
+    $limit = array();
+    $limitmin = array();
+    $limitmax = array();
+    $Q = array();
+    // a.)mencari nilai min-max sesuai tipe
+    for ($i = 0; $i < $n_criteria; $i++) {
+
+      $max0 =  $value[$i];
+
+      for ($j = 0; $j < $n_subject * $n_criteria; $j += $n_criteria) {
+        $index = $j + $i;
+        if ($max0 < $value[$index]) {
+          $max0 = $value[$index];
         }
-    }
-}
+      }
+      $limitmax[$i] = $max0;
 
-if(empty($data_alternatif_rows)){
-    echo "
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Konsep gedung yang anda cari tidak ada!',
-                confirmButtonText: 'OK'
-            }).then(function(result) {
-                if (result.isConfirmed) {
-                    window.location.href = './pembobotan.php';
-                }
-            });
-        </script>
-        ";
-}
 
-// Bobot untuk tiap kriteria
-$bobot = ['C1' => $normalized_harga_sewa, 'C2' => $normalized_fasilitas, 'C3' => $normalized_kapasitas_tamu, 'C4' => $normalized_kapasitas_parkir];
+      $min0 =  $value[$i];
 
-// Normalisasi data berdasarkan tipe kriteria (Cost atau Benefit)
-$C1_values = $C2_values = $C3_values = $C4_values = [];
 
-foreach ($data_alternatif_rows as $alternatif) {
-    if($alternatif['nama_alternatif'] != 'min' && $alternatif['nama_alternatif'] != 'max'){
-        $C1_values[] = $alternatif['C1']; 
-        $C2_values[] = $alternatif['C2']; 
-        $C3_values[] = $alternatif['C3']; 
-        $C4_values[] = $alternatif['C4'];
-    }
-}
-
-$C1_min = min($C1_values); 
-$C1_max = max($C1_values); 
-$C2_min = min($C2_values); 
-$C2_max = max($C2_values); 
-$C3_min = min($C3_values); 
-$C3_max = max($C3_values); 
-$C4_min = min($C4_values);
-$C4_max = max($C4_values);
-
-// foreach ($data_alternatif_rows as &$alternatif) {
-//     if($alternatif['nama_alternatif'] != 'min' || $alternatif['nama_alternatif'] != 'max'){
-//         // Normalisasi untuk Cost (Semakin kecil semakin baik)
-//         $alternatif['N_C1'] = $C1_minmax / $alternatif['C1'];
+        for ($j = 0; $j < $n_subject * $n_criteria; $j += $n_criteria) {
+          $index = $j + $i;
+          if ($min0 > $value[$index]) {
+            $min0 = $value[$index];
+            
+          }
+        }
         
-//         // Normalisasi untuk Benefit (Semakin besar semakin baik)
-//         $alternatif['N_C2'] = $alternatif['C2'] / $C2_minmax;
-//         $alternatif['N_C3'] = $alternatif['C3'] / $C3_minmax;
-//         $alternatif['N_C4'] = $alternatif['C4'] / $C4_minmax;
+        $limitmin[$i] = $min0;   
 
-//         // Hitung nilai utilitas (nilai normalisasi dikali bobot)
-//         $alternatif['total'] = (
-//             $alternatif['N_C1'] * $bobot['C1'] +
-//             $alternatif['N_C2'] * $bobot['C2'] +
-//             $alternatif['N_C3'] * $bobot['C3'] +
-//             $alternatif['N_C4'] * $bobot['C4']
-//         );
-//     }
-// }
+      // nilai max/benefit
+      if ($type[$i] == "Benefit") {
+        $max =  $value[$i];
 
-foreach ($data_alternatif_rows as &$alternatif) {
-        // Normalisasi untuk Cost (Semakin kecil semakin baik)
-        $alternatif['N_C1'] = ($C1_max - $alternatif['C1']) / ($C1_max - $C1_min);
+        for ($j = 0; $j < $n_subject * $n_criteria; $j += $n_criteria) {
+          $index = $j + $i;
+          if ($max < $value[$index]) {
+            $max = $value[$index];
+          }
+        }
+        $limit[$i] = $max;
+      }
+
+      // nilai min/cost
+      if ($type[$i] == "Cost") {
+        $min =  $value[$i];
+
+
+        for ($j = 0; $j < $n_subject * $n_criteria; $j += $n_criteria) {
+          $index = $j + $i;
+          if ($min > $value[$index]) {
+            $min = $value[$index];
+            
+          }
+        }
         
-        // Normalisasi untuk Benefit (Semakin besar semakin baik)
-        $alternatif['N_C2'] = ($alternatif['C2'] - $C2_min) / ($C2_max - $C2_min);
-        $alternatif['N_C3'] = ($alternatif['C3'] - $C3_min) / ($C3_max - $C3_min);
-        $alternatif['N_C4'] = ($alternatif['C4'] - $C4_min) / ($C4_max - $C4_min);
+        $limit[$i] = $min;      
+      }
+    }
 
-        // Hitung nilai utilitas (nilai normalisasi dikali bobot)
-        $alternatif['total'] = (
-            $alternatif['N_C1'] * $bobot['C1'] +
-            $alternatif['N_C2'] * $bobot['C2'] +
-            $alternatif['N_C3'] * $bobot['C3'] +
-            $alternatif['N_C4'] * $bobot['C4']
-        );
     
+
+
+    for ($i = 0; $i < $n_criteria; $i++) {
+      if ($type[$i] == "Benefit") {
+        for ($j = 0; $j < $n_subject * $n_criteria; $j += $n_criteria) {
+          $index = $j + $i;
+
+          $denominator = $value[$index];
+          if ($denominator != 0) {
+            $value[$index] = ($value[$index] - $limitmin[$i]) / ($limitmax[$i] - $limitmin[$i]);
+          } else {
+            $value[$index] = 0;
+          }
+        }
+      } else if ($type[$i] == "Cost") {
+        for ($j = 0; $j < $n_subject * $n_criteria; $j += $n_criteria) {
+          $index = $j + $i;
+
+          $denominator = $value[$index];
+          if ($denominator != 0) {
+            $value[$index] = ($limitmax[$i] - $value[$index]) / ($limitmax[$i]-$limitmin[$i]);
+          } else {
+            $value[$index] = 0;
+          }
+        }
+      }
+    }  
+
+    $hasil = [];
+
+    for($i=0; $i < $n_subject; $i++){
+      $total = 0;
+      for($j=0; $j < $n_criteria; $j++){
+        $index = $j + ($i * $n_criteria);
+        $total += $value[$index] * $w[$j];
+      }
+      $Q[$i] = $total;
+    }
+
+      // d.) Mengurutkan berdasarkan nilai terbesar
+      for ($i = 0; $i < $n_subject; $i++) {
+          $Q[$i] = array($Q[$i], $alternatif[$i], $detail[$i]);
+      }
+      // sort($wsm);
+      // sort($wpm);
+      sort($Q);
+      
+
+      // -------------------------------------------------------------------------------
+      // -rumus untuk matriks keputusan
+      //-- inisialisasi variabel array id_alternatif+alternatif untuk matriks keputusan
+      $alternatif1 = array();
+      $sql = 'SELECT * FROM alternatif';
+      if($konsep_gedung != null){
+        $sql .= "WHERE konsep_gedung ='".$konsep_gedung."'";
+      }
+      $data = $koneksi->query($sql);
+      while ($row = $data->fetch_object()) {
+        $alternatif1[$row->id_alternatif] = $row->nama_alternatif;
+      }
+      //-- inisialisasi variabel array id_kriteria+kriteria untuk matriks keputusan
+      $kriteria1 = array();
+      $sql = 'SELECT * FROM kriteria';
+      $data = $koneksi->query($sql);
+      while ($row = $data->fetch_object()) {
+        $kriteria1[$row->id_kriteria] = array($row->nama_kriteria, $row->jenis_kriteria);
+      }
+      //-- ambil nilai dari tabel_nilai untuk matriks keputusan
+      $nilai1 = array();
+      $sql = "SELECT kac.*,sk.*, a.konsep_gedung, sk.bobot_sub_kriteria AS nilai 
+              FROM kec_alt_kriteria kac JOIN sub_kriteria sk
+              ON sk.id_sub_kriteria=kac.f_id_sub_kriteria 
+              JOIN alternatif a ON a.id_alternatif=kac.f_id_alternatif ";
+              
+      if($konsep_gedung != null){
+        $sql .= "WHERE konsep_gedung ='".$konsep_gedung."' ";
+      }
+
+      $sql .= "ORDER BY kac.f_id_alternatif, kac.f_id_kriteria";
+      
+      $data = $koneksi->query($sql);
+      while ($row = $data->fetch_object()) {
+        $i = $row->f_id_alternatif;
+        $j = $row->f_id_kriteria;
+        $aij = $row->nilai;
+
+        $nilai1[$i][$j] = $aij;
+      }
+      // Mengurutkan berdasarkan peringkat (dari besar ke kecil)
+      usort($Q, function($a, $b) {
+        return $b[0] <=> $a[0];
+      });
+
+    } catch (Throwable $e) {
+      // Menangkap semua jenis kesalahan
+      echo "<script>alert('Terjadi kesalahan: {$e->getMessage()}'). Kesalahan tersebut disebabkan oleh data alternatif yang belum lengkap. Silahkan hubungi admin untuk melengkapi!; window.location.href = './index.php';</script>";
+      exit;
+  }
+
+  ob_end_flush();
 }
 
 
-// Urutkan berdasarkan nilai total
-usort($data_alternatif_rows, function ($a, $b) {
-    return $b['total'] <=> $a['total'];
-});
 
-$i = 0;
+
 ?>
 
 <!-- Section: Design Block -->
@@ -238,16 +302,16 @@ $i = 0;
                 <h2 class="text-center">Hasil Perangkingan Paket Resepsi Pernikahan</h2>
             </div>
             <div class="row row-cols-1 row-cols-md-3 g-4">
-                <?php foreach ($data_alternatif_rows as $key => $value):?>
+                <?php $j = 0;?>
+                <?php foreach ($Q as $value): ?>
                 <div class="col" data-aos="fade-up" data-aos-duration="3000" data-aos-anchor-placement="center-bottom">
                     <div class="card h-100">
-                        <img src="./images/<?=$value['gambar'];?>" class="card-img-top" alt="Card 1">
+                        <img src="./images/<?=$value[2]['gambar'];?>" class="card-img-top" alt="Card Image">
                         <div class="card-body">
-                            <h5 class="card-title"><?=$value['nama_alternatif'];?></h5>
-                            <p class="card-text">Rangking ke - <?= ++$i;?> (<?= number_format($value['total'], 3); ?>)
-                            </p>
+                            <h5 class="card-title"><?=$value[2]['nama_alternatif'];?></h5>
+                            <p class="card-text">Rangking ke - <?= ++$j;?> (<?= number_format($value[0], 3); ?>)</p>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#exampleModal<?=$value['id_alternatif'];?>">
+                                data-bs-target="#exampleModal<?=$value[2]['id_alternatif'];?>">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-layout-text-sidebar-reverse" viewBox="0 0 16 16">
                                     <path
@@ -257,7 +321,7 @@ $i = 0;
                                 </svg>
                             </button>
                             <a target="_blank"
-                                href="https://www.google.com/maps/dir/?api=1&destination=<?=$value['latitude'];?>,<?=$value['longitude'];?>"
+                                href="https://www.google.com/maps/dir/?api=1&destination=<?=$value[2]['latitude'];?>,<?=$value[2]['longitude'];?>"
                                 class="btn btn-success">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-geo-alt" viewBox="0 0 16 16">
@@ -269,7 +333,8 @@ $i = 0;
                         </div>
                     </div>
                 </div>
-                <?php endforeach;?>
+                <?php endforeach; ?>
+
             </div>
             <!-- End List of Cards -->
         </div>
@@ -278,31 +343,34 @@ $i = 0;
 </section>
 <?php require 'footer.php'; ?>
 
-<?php foreach ($data_alternatif_rows as $key => $value): ?>
-<div class="modal fade" id="exampleModal<?=$value['id_alternatif'];?>" tabindex="-1" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<?php foreach ($Q as $value): ?>
+<div class="modal fade" id="exampleModal<?=$value[2]['id_alternatif'];?>" tabindex="-1"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <?php 
+      $spesifikasi = $koneksi->query("SELECT sk.spesifikasi, k.nama_kriteria  FROM kec_alt_kriteria kac 
+                                      JOIN kriteria k ON k.id_kriteria=kac.f_id_kriteria 
+                                      JOIN sub_kriteria sk ON sk.id_sub_kriteria=kac.f_id_sub_kriteria 
+                                      WHERE kac.f_id_alternatif='".$value[2]['id_alternatif']."';");
+    ?>
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Detail <?=$value['nama_alternatif'];?>
-                </h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Detail <?=$value[2]['nama_alternatif'];?></h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="text-center mb-3">
-                    <img src="./images/<?=$value['gambar'];?>" alt="Gambar <?=$value['nama_alternatif'];?>"
+                    <img src="./images/<?=$value[2]['gambar'];?>" alt="Gambar <?=$value[2]['nama_alternatif'];?>"
                         class="img-fluid" style="max-height: 200px;">
                 </div>
                 <ul class="list-group">
-                    <li class="list-group-item"><strong>Nama Alternatif:</strong> <?=$value['nama_alternatif'];?></li>
-                    <li class="list-group-item"><strong>Konsep Gedung:</strong> <?=$value['konsep_gedung'];?></li>
-                    <li class="list-group-item"><strong>Harga Sewa:</strong>
-                        Rp<?=number_format($value['harga_sewa'], 0, ',', '.');?></li>
-                    <li class="list-group-item"><strong>Fasilitas:</strong> <?=$value['fasilitas'];?> Fasilitas</li>
-                    <li class="list-group-item"><strong>Kapasitas Tamu:</strong> <?=$value['kapasitas_tamu'];?> orang
+                    <li class="list-group-item"><strong>Konsep Gedung:</strong> <?=$value[2]['konsep_gedung'];?></li>
+                    <li class="list-group-item"><strong>Nama Alternatif:</strong> <?=$value[2]['nama_alternatif'];?>
                     </li>
-                    <li class="list-group-item"><strong>Kapasitas Parkir:</strong> <?=$value['kapasitas_parkir'];?>
-                        kendaraan</li>
+                    <?php foreach ($spesifikasi as $key => $value):?>
+                    <li class="list-group-item"><strong><?=$value['nama_kriteria'];?>:</strong>
+                        <?=$value['spesifikasi'];?></li>
+                    <?php endforeach?>
                 </ul>
             </div>
             <div class="modal-footer">

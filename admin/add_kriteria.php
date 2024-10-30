@@ -20,21 +20,6 @@ if(isset($_POST['tambah'])){
 
 $data_Kriteria = $Kriteria->getKriteria();
 ?>
-<?php if (mysqli_num_rows($data_Kriteria) == 4): ?>
-<script>
-var successfuly = 'Hanya menerima <?=mysqli_num_rows($data_Kriteria)?> kriteria!';
-Swal.fire({
-    title: 'Warning!',
-    text: successfuly,
-    icon: 'warning',
-    confirmButtonText: 'OK'
-}).then(function(result) {
-    if (result.isConfirmed) {
-        window.location.href = './kriteria.php';
-    }
-});
-</script>
-<?php endif; ?>
 
 <?php if (isset($_SESSION['success'])): ?>
 <script>
@@ -95,7 +80,7 @@ Swal.fire({
                                     <label for="id_kriteria" class="form-label col-lg-2">Kode Kriteria
                                         <small class="text-danger">*</small></label>
                                     <input class="form-control" required name="id_kriteria" id="id_kriteria" type="text"
-                                        placeholder="Kode Kriteria" aria-label="default input example" maxlength="2">
+                                        placeholder="contoh : C1" aria-label="default input example" maxlength="2">
                                 </div>
                             </div>
                             <div class="card-body">

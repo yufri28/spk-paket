@@ -95,17 +95,10 @@ Swal.fire({
                             </div>
                             <div class="card-body">
                                 <div class="d-lg-flex">
-                                    <label for="bobot_sub_kriteria" class="form-label col-lg-2">Bobot <small
-                                            class="text-danger">*</small></label>
-                                    <select class="form-control" required id="bobot_sub_kriteria"
-                                        name="bobot_sub_kriteria" aria-label="Default select example">
-                                        <option value="">-- Pilih Bobot --</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                    </select>
+                                    <label for="bobot_sub_kriteria" class="form-label col-lg-2">Bobot
+                                        <small class="text-danger">*</small></label>
+                                    <input class="form-control" required name="bobot_sub_kriteria" type="number"
+                                        placeholder="Bobot" aria-label="default input example">
                                 </div>
                             </div>
                             <div class="card-body">

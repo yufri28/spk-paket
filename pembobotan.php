@@ -4,6 +4,8 @@ require_once './config.php';
 
 unset($_SESSION['active-menu']);
 $_SESSION['active-menu'] = 'pembobotan';
+
+$dataKriteria = $koneksi->query("SELECT * FROM kriteria");
 ?>
 <?php require './header.php';?>
 <!-- Section: Design Block -->
@@ -32,15 +34,15 @@ $_SESSION['active-menu'] = 'pembobotan';
                         <h5>Apakah Anda menginginkan pernikahan di area Indoor atau Outdoor?</h5>
                         <div class="radio">
                             <div class="form-check">
-                                <input required class="form-check-input" type="radio" value="Indoor"
-                                    name="konsep_gedung" id="indoor">
+                                <input class="form-check-input" type="radio" value="Indoor" name="konsep_gedung"
+                                    id="indoor">
                                 <label class="form-check-label" for="indoor">
                                     Indoor
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input required class="form-check-input" type="radio" value="Outdoor"
-                                    name="konsep_gedung" id="outdoor">
+                                <input class="form-check-input" type="radio" value="Outdoor" name="konsep_gedung"
+                                    id="outdoor">
                                 <label class="form-check-label" for="outdoor">
                                     Outdoor
                                 </label>
@@ -48,27 +50,14 @@ $_SESSION['active-menu'] = 'pembobotan';
                         </div>
                     </div>
                     <div class="col-lg-4">
+                        <?php foreach ($dataKriteria as $key => $kriteria):?>
                         <div class="mb-3">
-                            <label for="fasilitas" class="form-label">Fasilitas</label>
-                            <input type="number" class="form-control" id="fasilitas" name="fasilitas" min="0" max="100">
+                            <label for="<?=$kriteria['id_kriteria'];?>"
+                                class="form-label"><?=$kriteria['nama_kriteria'];?></label>
+                            <input type="number" class="form-control" id="<?=$kriteria['id_kriteria'];?>"
+                                name="<?=$kriteria['id_kriteria'];?>" min="0" max="100">
                         </div>
-                        <div class="mb-3">
-                            <label for="kapasitas_tamu" class="form-label">Kapasitas Tamu</label>
-                            <input type="number" class="form-control" id="kapasitas_tamu" name="kapasitas_tamu" min="0"
-                                max="100">
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="mb-3">
-                            <label for="kapasitas_parkir" class="form-label">Kapasitas Parkir</label>
-                            <input type="number" class="form-control" id="kapasitas_parkir" name="kapasitas_parkir"
-                                min="0" max="100">
-                        </div>
-                        <div class="mb-3">
-                            <label for="harga_sewa" class="form-label">Harga Sewa</label>
-                            <input type="number" class="form-control" id="harga_sewa" name="harga_sewa" min="0"
-                                max="100">
-                        </div>
+                        <?php endforeach;?>
                     </div>
                     <div class="col-lg-12 d-flex justify-content-center mb-5 mt-lg-5">
                         <button type="submit" name="hasil-perengkingan" class="btn btn-primary">Hasil

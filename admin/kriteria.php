@@ -86,11 +86,9 @@ Swal.fire({
                 <!-- DataTales Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <?php if(mysqli_num_rows($data_Kriteria) < 4): ?>
                         <a href="./add_kriteria.php" class="btn btn-primary mb-3">
                             + Tambah Kriteria
                         </a>
-                        <?php endif;?>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -115,9 +113,9 @@ Swal.fire({
                                             <button data-toggle="modal"
                                                 data-target="#edit<?=$kriteria['id_kriteria'];?>" type="button"
                                                 class="btn btn-sm btn-primary">Edit</button>
-                                            <!-- <button data-toggle="modal"
+                                            <button data-toggle="modal"
                                                 data-target="#hapus<?=$kriteria['id_kriteria'];?>" type="button"
-                                                class="btn btn-sm btn-danger">Hapus</button> -->
+                                                class="btn btn-sm btn-danger">Hapus</button>
                                         </td>
                                     </tr>
                                     <?php endforeach;?>
@@ -211,8 +209,10 @@ Swal.fire({
                             <select class="form-control" name="jenis_kriteria" required
                                 aria-label="Default select example">
                                 <option value="">-- Pilih Jenis Kriteria --</option>
-                                <option value="Cost">Cost</option>
-                                <option value="Benefit">Benefit</option>
+                                <option <?=$kriteria['jenis_kriteria'] == 'Cost' ?'selected':'';?> value="Cost">Cost
+                                </option>
+                                <option <?=$kriteria['jenis_kriteria'] == 'Benefit' ?'selected':'';?> value="Benefit">
+                                    Benefit</option>
                             </select>
                         </div>
                     </div>
