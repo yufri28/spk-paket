@@ -44,7 +44,7 @@ set_error_handler('errorHandler');
 if (isset($_POST['hasil-perengkingan'])) {
   ob_start();
   try {
-     $konsep_gedung = null;  
+      $konsep_gedung = null;  
       $dataBobotKriteria = [];
       $w = [];
       // Sanitize and cast inputs
@@ -272,10 +272,29 @@ if (isset($_POST['hasil-perengkingan'])) {
 
         $nilai1[$i][$j] = $aij;
       }
-      // Mengurutkan berdasarkan peringkat (dari besar ke kecil)
-      usort($Q, function($a, $b) {
-        return $b[0] <=> $a[0];
-      });
+      // // Mengurutkan berdasarkan peringkat (dari besar ke kecil)
+      // usort($Q, function($a, $b) {
+      //   return $b[0] <=> $a[0];
+      // });
+
+      usort($Q, function($a, $b) use ($w) {
+        // Urutkan berdasarkan bobot total (posisi 0 dalam $Q)
+        $result = $b[0] <=> $a[0];
+    
+        // Jika sama, urutkan berdasarkan bobot kriteria yang lebih tinggi
+        if ($result === 0) {
+            // Ambil nilai bobot kriteria dari posisi yang tepat (misalnya, $w[1], $w[2], dsb.)
+            for ($i = 1; $i < count($w); $i++) {
+                // Membandingkan berdasarkan bobot kriteria
+                if ($a[$i] !== $b[$i]) {
+                    return $b[$i] <=> $a[$i];
+                }
+            }
+        }
+    
+        return $result;
+    });
+    
 
     } catch (Throwable $e) {
       // Menangkap semua jenis kesalahan
@@ -343,7 +362,7 @@ if (isset($_POST['hasil-perengkingan'])) {
 <div class="modal fade" id="exampleModal<?=$value[2]['id_alternatif'];?>" tabindex="-1"
     aria-labelledby="exampleModalLabel" aria-hidden="true">
     <?php 
-      $spesifikasi = $koneksi->query("SELECT sk.spesifikasi, k.nama_kriteria  FROM kec_alt_kriteria kac 
+      $spesifikasi = $koneksi->query("SELECT sk.spesifikasi, kac.detail, k.nama_kriteria  FROM kec_alt_kriteria kac 
                                       JOIN kriteria k ON k.id_kriteria=kac.f_id_kriteria 
                                       JOIN sub_kriteria sk ON sk.id_sub_kriteria=kac.f_id_sub_kriteria 
                                       WHERE kac.f_id_alternatif='".$value[2]['id_alternatif']."';");
@@ -363,9 +382,9 @@ if (isset($_POST['hasil-perengkingan'])) {
                     <li class="list-group-item"><strong>Konsep Gedung:</strong> <?=$value[2]['konsep_gedung'];?></li>
                     <li class="list-group-item"><strong>Nama Alternatif:</strong> <?=$value[2]['nama_alternatif'];?>
                     </li>
-                    <?php foreach ($spesifikasi as $key => $value):?>
-                    <li class="list-group-item"><strong><?=$value['nama_kriteria'];?>:</strong>
-                        <?=$value['spesifikasi'];?></li>
+                    <?php foreach ($spesifikasi as $key => $values):?>
+                    <li class="list-group-item"><strong><?=$values['nama_kriteria'];?>:</strong>
+                        <?=$values['detail']??'-';?></li>
                     <?php endforeach?>
                 </ul>
             </div>

@@ -11,7 +11,7 @@
         public function getAlternatif(){
            
             return $this->db->query("SELECT a.nama_alternatif, a.id_alternatif, a.gambar, a.latitude, a.longitude, a.konsep_gedung, a.alamat, kak.id_alt_kriteria,
-                sk.id_sub_kriteria
+                sk.id_sub_kriteria, kak.detail
                 FROM alternatif a
                 JOIN kec_alt_kriteria kak ON a.id_alternatif = kak.f_id_alternatif
                 JOIN sub_kriteria sk ON kak.f_id_sub_kriteria = sk.id_sub_kriteria
@@ -66,8 +66,12 @@
             if ($insertAlternatif) {
                 $id_alternatif = $this->db->insert_id;
               
-                foreach ($dataKecAltKrit as $key => $id_sub_kriteria) {
-                    $insertKecAltKrit = $this->db->query("INSERT INTO kec_alt_kriteria (id_alt_kriteria, f_id_alternatif, f_id_kriteria, f_id_sub_kriteria) VALUES (NULL, '$id_alternatif', '$key', '$id_sub_kriteria')");
+                // foreach ($dataKecAltKrit as $key => $id_sub_kriteria) {
+                //     $insertKecAltKrit = $this->db->query("INSERT INTO kec_alt_kriteria (id_alt_kriteria, f_id_alternatif, f_id_kriteria, f_id_sub_kriteria, detail) VALUES (NULL, '$id_alternatif', '$key', '$id_sub_kriteria', '')");
+                // }
+                
+                for ($i=1; $i <= (count($dataKecAltKrit)/2); $i++) { 
+                    $insertKecAltKrit = $this->db->query("INSERT INTO kec_alt_kriteria (id_alt_kriteria, f_id_alternatif, f_id_kriteria, f_id_sub_kriteria, detail) VALUES (NULL, '$id_alternatif', 'C$i', '".$dataKecAltKrit['C'.$i]."', '".$dataKecAltKrit['detail_C'.$i]."')");
                 }
                 if ($insertKecAltKrit && $this->db->affected_rows > 0) {
                     return $_SESSION['success'] = 'Data berhasil disimpan!';
@@ -99,25 +103,47 @@
 
             if ($updateAlternatif) {
                 // Update data kec_alt_kriteria
-                foreach ($dataKecAltKrit as $key => $id_sub_kriteria) {
+
+                for ($i=1; $i <= (count($dataKecAltKrit)/2); $i++) { 
                     // Tambahkan kode untuk cek jika data sudah ada sebelumnya maka diupdate. Tetapi belum maka ditambahkan
                     $cekKecAlt = $this->db->query("SELECT id_alt_kriteria 
                                                    FROM kec_alt_kriteria 
                                                    WHERE f_id_alternatif = '$id_alternatif' 
-                                                   AND f_id_kriteria = '$key'");
+                                                   AND f_id_kriteria = 'C$i'");
                     if($cekKecAlt->num_rows < 1){
                         $this->db->query("INSERT INTO kec_alt_kriteria 
                                          (id_alt_kriteria, f_id_alternatif, 
-                                         f_id_kriteria, f_id_sub_kriteria) 
+                                         f_id_kriteria, f_id_sub_kriteria, detail) 
                                           VALUES (NULL, '$id_alternatif', 
-                                          '$key', '$id_sub_kriteria')");
+                                          'C$i', '".$dataKecAltKrit['C'.$i]."', '".$dataKecAltKrit['detail_C'.$i]."')");
                     }else{
                         $updateKecAltKrit = $this->db->query("UPDATE kec_alt_kriteria 
-                                                              SET f_id_sub_kriteria = '$id_sub_kriteria' 
+                                                              SET f_id_sub_kriteria = '".$dataKecAltKrit['C'.$i]."' ,
+                                                              detail = '".$dataKecAltKrit['detail_C'.$i]."' 
                                                               WHERE f_id_alternatif = '$id_alternatif' 
-                                                              AND f_id_kriteria = '$key'");
+                                                              AND f_id_kriteria = 'C$i'");
                     }
                 }
+
+                // foreach ($dataKecAltKrit as $key => $id_sub_kriteria) {
+                //     // Tambahkan kode untuk cek jika data sudah ada sebelumnya maka diupdate. Tetapi belum maka ditambahkan
+                //     $cekKecAlt = $this->db->query("SELECT id_alt_kriteria 
+                //                                    FROM kec_alt_kriteria 
+                //                                    WHERE f_id_alternatif = '$id_alternatif' 
+                //                                    AND f_id_kriteria = '$key'");
+                //     if($cekKecAlt->num_rows < 1){
+                //         $this->db->query("INSERT INTO kec_alt_kriteria 
+                //                          (id_alt_kriteria, f_id_alternatif, 
+                //                          f_id_kriteria, f_id_sub_kriteria) 
+                //                           VALUES (NULL, '$id_alternatif', 
+                //                           '$key', '$id_sub_kriteria')");
+                //     }else{
+                //         $updateKecAltKrit = $this->db->query("UPDATE kec_alt_kriteria 
+                //                                               SET f_id_sub_kriteria = '$id_sub_kriteria' 
+                //                                               WHERE f_id_alternatif = '$id_alternatif' 
+                //                                               AND f_id_kriteria = '$key'");
+                //     }
+                // }
                 if ($updateKecAltKrit || $this->db->affected_rows > 0) {
                     return $_SESSION['success'] = 'Data berhasil diupdate!';
                 } 

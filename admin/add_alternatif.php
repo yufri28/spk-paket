@@ -8,14 +8,6 @@ require_once './functions/data_alternatif.php';
 $dataAlternatif = $Alternatif->getAlternatif();
 $dataKriteria = $Alternatif->getKriteria();
 
-$usulkanDataAlt = [];
-$usulkanDataAltKriteria = [];
-
-$subC1 = 0;
-$subC2 = 0;
-$subC3 = 0;
-$subC4 = 0;
-
 // tambah alternatif
 if(isset($_POST['tambah'])){
 
@@ -23,7 +15,23 @@ if(isset($_POST['tambah'])){
     
     foreach ($dataKriteria as $key => $value) {
         $dataKecAltKrit[$value['id_kriteria']] = $_POST[$value['id_kriteria']];
+        $dataKecAltKrit['detail_'.$value['id_kriteria']] = $_POST['detail_'.$value['id_kriteria']];
     }
+
+    // foreach ($dataKecAltKrit as $value) {
+    //     foreach ($value as $key => $values) {
+    //         echo $values[];
+    //     }
+    // }
+
+    // for ($i = 1; $i <= count($dataKecAltKrit)/2; $i++) {
+    //     echo $dataKecAltKrit['C'.$i] . '<br>';
+    //     echo $dataKecAltKrit['detail_C'.$i] . '<br>';
+    // }
+    // echo "<pre>";
+    // print_r ($dataKecAltKrit);
+    // echo "</pre>";
+    // die;
 
     $nama_alternatif = htmlspecialchars($_POST['nama_alternatif']);
     $alamat = htmlspecialchars($_POST['alamat']);
@@ -184,6 +192,16 @@ Swal.fire({
                                         <option value="<?=$sub['id_sub_kriteria'];?>"><?=$sub['spesifikasi'];?></option>
                                         <?php endforeach;?>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-lg-flex">
+                                    <label for="detail-<?=$value['id_kriteria'];?>" class="form-label col-lg-2">Detail
+                                        <?=$value['nama_kriteria'];?>
+                                        <small class="text-danger">*</small></label>
+                                    <input type="text" class="form-control" name="detail_<?=$value['id_kriteria'];?>"
+                                        id="detail-<?=$value['nama_kriteria'];?>" required
+                                        placeholder="Detail <?=$value['nama_kriteria'];?> ..." />
                                 </div>
                             </div>
                             <?php endforeach;?>

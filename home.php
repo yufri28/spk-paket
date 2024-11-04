@@ -15,7 +15,7 @@ $getKecAltKrit = $koneksi->query("SELECT *
 while ($row = $getKecAltKrit->fetch_object()) {
     $i = $row->f_id_alternatif;
     $j = $row->f_id_kriteria;
-    $aij = $row->spesifikasi;
+    $aij = $row->detail;
   
     $nilai1[$i][$j] = $aij;
   }

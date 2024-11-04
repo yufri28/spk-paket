@@ -10,7 +10,7 @@ $getKecAltKrit = $Alternatif->getKecAltKrit();
 while ($row = $getKecAltKrit->fetch_object()) {
   $i = $row->f_id_alternatif;
   $j = $row->f_id_kriteria;
-  $aij = $row->spesifikasi;
+  $aij = $row->detail;
 
   $nilai1[$i][$j] = $aij;
 }
@@ -30,8 +30,13 @@ if(isset($_POST['edit'])){
 
     $dataKecAltKrit = [];
     
+    // foreach ($dataKriteria as $key => $value) {
+    //     $dataKecAltKrit[$value['id_kriteria']] = $_POST[$value['id_kriteria']];
+    // }
+
     foreach ($dataKriteria as $key => $value) {
         $dataKecAltKrit[$value['id_kriteria']] = $_POST[$value['id_kriteria']];
+        $dataKecAltKrit['detail_'.$value['id_kriteria']] = $_POST['detail_'.$value['id_kriteria']];
     }
 
     // Pastikan ada file gambar yang diunggah
@@ -269,6 +274,7 @@ Swal.fire({
                     <?php foreach ($dataKriteria as $key => $value) :?>
                     <?php 
                         $selectIdSub = $koneksi->query("SELECT f_id_sub_kriteria FROM kec_alt_kriteria WHERE f_id_alternatif='".$alternatif['id_alternatif']."' AND f_id_kriteria='".$value['id_kriteria']."'")->fetch_array();
+                        $selectDetail = $koneksi->query("SELECT detail FROM kec_alt_kriteria WHERE f_id_alternatif='".$alternatif['id_alternatif']."' AND f_id_kriteria='".$value['id_kriteria']."'")->fetch_array();
                         $selectSub = $koneksi->query("SELECT * FROM sub_kriteria WHERE f_id_kriteria='".$value['id_kriteria']."'");
                     ?>
                     <div class="card-body">
@@ -288,6 +294,15 @@ Swal.fire({
                                 <?php endif;?>
                                 <?php endforeach;?>
                             </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="">
+                            <label for="<?=$value['id_kriteria'];?>" class="form-label"><?=$value['nama_kriteria'];?>
+                                <small class="text-danger">*</small></label>
+                            <input type="text" class="form-control" name="detail_<?=$value['id_kriteria'];?>"
+                                id="detail-<?=$value['nama_kriteria'];?>" value="<?=$selectDetail['detail'];?>" required
+                                placeholder="Detail <?=$value['nama_kriteria'];?> ..." />
                         </div>
                     </div>
                     <?php endforeach;?>
