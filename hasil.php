@@ -314,7 +314,10 @@ if (isset($_POST['hasil-perengkingan'])) {
         <div class="container" style="min-height:100vh;">
             <!-- List of Cards -->
             <div class="col-12">
-                <h2 class="text-center">Hasil Perangkingan Paket Resepsi Pernikahan</h2>
+                <a class="btn btn-danger" href="./pembobotan.php">Kembali Pembobotan</a>
+                <h2 class="text-center"> Hasil
+                    Perangkingan
+                    Paket Resepsi Pernikahan</h2>
             </div>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 <?php $j = 0;?>

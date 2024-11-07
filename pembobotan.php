@@ -28,6 +28,51 @@ $dataKriteria = $koneksi->query("SELECT * FROM kriteria");
                         <li>Setiap Bobot memiliki nilai maksimal 100</li>
                         <li>Bobot yang memiliki nilai tertinggi adalah kriteria terpenting</li>
                     </ol>
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                        Baca panduan selengkapnya
+                    </button>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Panduan</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Panduan untuk mengisi bobot pada sistem ini :
+                                    <ol>
+                                        <li>
+                                            Pilih Konsep Gedung : pada bagian ini anda diminta untuk memilih konsep
+                                            Gedung sesuai dengan
+                                            preferensi anda. Jika Anda ingin mempertimbangkan kedua konsep, biarkan opsi
+                                            ini kosong.
+                                        </li>
+                                        <li>Berikan bobot pada setiap kriteria : setiap kriteria memiliki rentang bobot
+                                            antara 0-100.
+                                            Berikan bobot sesuai dengan seberapa penting kriteria tersebut dalam
+                                            keputusan anda. Semakin
+                                            tinggi bobot yang diberikan, semakin besar pengaruh kriteria tersebut dalam
+                                            menentukan hasil
+                                            akhir.
+                                        </li>
+                                        <li>Lihat Hasil perangkingan : setelah anda mengisi bobot kriteria, klik tombol
+                                            "Hasil
+                                            Perangkingan" untuk menampilkan paket resepsi pernikahan sesuai preferensi
+                                            anda.
+                                        </li>
+                                    </ol>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Tutup</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="d-flex row mt-lg-5">
                     <div class="col-lg-4">
@@ -60,6 +105,7 @@ $dataKriteria = $koneksi->query("SELECT * FROM kriteria");
                         <?php endforeach;?>
                     </div>
                     <div class="col-lg-12 d-flex justify-content-center mb-5 mt-lg-5">
+                        <a class="btn btn-danger me-2" href="./index.php">Kembali</a>
                         <button type="submit" name="hasil-perengkingan" class="btn btn-primary">Hasil
                             Perangkingan</button>
                     </div>

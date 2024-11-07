@@ -45,7 +45,9 @@ else if($_SESSION['level'] != "admin"){
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand mt-4 d-flex flex-column align-items-center justify-content-center" href="">
                 <div class="sidebar-brand-icon">
-                    <i class="fas fa-home"></i>
+                    <img class="img-fluid me-auto" style="width:40px; height: auto" src="../assets/img/icon-white.svg"
+                        alt="">
+                    <!-- <i class="fas fa-home"></i> -->
                 </div>
                 <div class="sidebar-brand-text mx-3">SPK Paket</div>
             </a>

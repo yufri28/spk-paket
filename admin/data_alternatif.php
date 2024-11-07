@@ -301,8 +301,8 @@ Swal.fire({
                             <label for="<?=$value['id_kriteria'];?>" class="form-label"><?=$value['nama_kriteria'];?>
                                 <small class="text-danger">*</small></label>
                             <input type="text" class="form-control" name="detail_<?=$value['id_kriteria'];?>"
-                                id="detail-<?=$value['nama_kriteria'];?>" value="<?=$selectDetail['detail'];?>" required
-                                placeholder="Detail <?=$value['nama_kriteria'];?> ..." />
+                                id="detail-<?=$value['nama_kriteria'];?>" value="<?=$selectDetail['detail']??'';?>"
+                                required placeholder="Detail <?=$value['nama_kriteria'];?> ..." />
                         </div>
                     </div>
                     <?php endforeach;?>

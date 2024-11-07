@@ -12,12 +12,20 @@
         rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+    .carousel-inner img {
+        height: 450px;
+        object-fit: cover;
+        filter: brightness(50%);
+    }
+    </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
         <div class="container-fluid p-4">
-            <a class="navbar-brand ms-4" style="font-family: 'Roboto', sans-serif;" href="#">SPK Paket Resepsi</a>
+            <a class="navbar-brand" style="font-family: 'Roboto', sans-serif;" href="#">SPK Paket Resepsi</a>
+            <img class="img-fluid me-auto" style="width:30px; height: auto" src="./assets/img/icon.svg" alt="">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>

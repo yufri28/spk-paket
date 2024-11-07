@@ -32,21 +32,41 @@ while ($row = $getKecAltKrit->fetch_object()) {
             <div class="row gx-lg-5 align-items-center mb-5">
                 <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
+                        <!-- Carousel item 1 -->
                         <div class="carousel-item active">
-                            <h4 class="display-6">Selamat Datang di </h4>
-                            <h4 class="lead">Sistem Pendukung Keputusan Pemilihan Paket Resepsi Pernikahan di Kota
-                                Kupang</h4>
+                            <img src="./assets/img/foto2.jpg" class="d-block h-80 w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h4 class="display-6">Selamat Datang di</h4>
+                                <h4 class="lead">Sistem Pendukung Keputusan Pemilihan Paket Resepsi Pernikahan di Kota
+                                    Kupang</h4>
+                                <h4 class="lead">Silahkan klik mulai untuk pemilihan paket yang mungkin cocok untuk
+                                    anda!</h4>
+                                <a class="btn btn-primary px-5" href="./pembobotan.php">Mulai</a>
+                            </div>
                         </div>
+                        <!-- Carousel item 2 -->
                         <div class="carousel-item">
-                            <h4 class="display-6">Metode yang digunakan.</h4>
-                            <h4 class="lead">Sistem Pendukung Keputusan Pemilihan Paket Resepsi Pernikahan ini
-                                menggunakan metode SMART</h4>
+                            <img src="./assets/img/foto1.jpg" class="d-block h-80 w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h4 class="display-6">Metode yang digunakan</h4>
+                                <h4 class="lead">Sistem Pendukung Keputusan ini menggunakan metode SMART</h4>
+                                <h4 class="lead">Silahkan klik mulai untuk pemilihan paket yang mungkin cocok untuk
+                                    anda!</h4>
+                                <a class="btn btn-primary px-5" href="./pembobotan.php">Mulai</a>
+                            </div>
                         </div>
+                        <!-- Carousel item 3 -->
                         <div class="carousel-item">
-                            <h4 class="display-6">Apa itu Metode SMART?</h4>
-                            <h4 class="lead">Metode SMART adalah salah satu metode pengambilan keputusan multi
-                                atribut yang pertama kali diperkenalkan oleh Edward pada tahun 1977 (Filho, 2005).
-                            </h4>
+                            <img src="./assets/img/foto3.jpg" class="d-block h-80 w-100" alt="...">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h4 class="display-6">Apa itu Metode SMART?</h4>
+                                <h4 class="lead">Metode SMART adalah salah satu metode pengambilan keputusan multi
+                                    atribut yang pertama kali diperkenalkan oleh Edward pada tahun 1977 (Filho, 2005).
+                                </h4>
+                                <h4 class="lead">Silahkan klik mulai untuk pemilihan paket yang mungkin cocok untuk
+                                    anda!</h4>
+                                <a class="btn btn-primary px-5" href="./pembobotan.php">Mulai</a>
+                            </div>
                         </div>
                     </div>
                     <!-- Kontrol sebelumnya dan berikutnya -->
@@ -62,6 +82,7 @@ while ($row = $getKecAltKrit->fetch_object()) {
                     </button>
                 </div>
             </div>
+
             <!-- End Slider -->
             <hr>
             <!-- List of Cards -->
