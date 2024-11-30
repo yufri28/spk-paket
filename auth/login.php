@@ -1,10 +1,9 @@
-<?php 
+<?php
 session_start();
-if(isset($_SESSION['login']) && $_SESSION['login'] == true && $_SESSION['level'] == "kepala"){
-    header("Location: ../user/index.php");
-}else if(isset($_SESSION['login']) && $_SESSION['login'] == true && $_SESSION['level'] == "admin") {
+if(isset($_SESSION['login']) && $_SESSION['login'] == true && $_SESSION['level'] == "admin") {
     header("Location: ../admin/index.php");
 }
+
 require_once '../config.php';
 
 // Memproses inputan dari form login
@@ -15,17 +14,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(mysqli_num_rows($result) > 0){
         $fetch = mysqli_fetch_assoc($result);
         $password_hash = password_verify($password, $fetch['password']);
-       
-        if ($password_hash && $fetch['level'] == "kepala") {
-                $_SESSION['login'] = true;
-                $_SESSION['username'] = $username;
-                $_SESSION['level'] = $fetch['level']; 
-                $_SESSION['id_admin'] = $fetch['id_admin']; 
-                // Jika level nya admin, redirect ke halaman index.php
-                header("Location: ../kepala/index.php");
-                exit();
-        }
-        else if ($password_hash && $fetch['level'] == "admin") {
+        
+        if ($password_hash && $fetch['level'] == "admin") {
             $_SESSION['login'] = true;
             $_SESSION['username'] = $username;
             $_SESSION['level'] = $fetch['level']; 
