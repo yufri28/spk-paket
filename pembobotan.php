@@ -94,15 +94,35 @@ $dataKriteria = $koneksi->query("SELECT * FROM kriteria");
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4">
-                        <?php foreach ($dataKriteria as $key => $kriteria):?>
-                        <div class="mb-3">
+                    <!-- <div class="col-lg-4"> -->
+                    <?php 
+                        // foreach ($dataKriteria as $key => $kriteria):
+                        ?>
+                    <!-- <div class="mb-3">
                             <label for="<?=$kriteria['id_kriteria'];?>"
                                 class="form-label"><?=$kriteria['nama_kriteria'];?></label>
                             <input type="number" class="form-control" id="<?=$kriteria['id_kriteria'];?>"
                                 name="<?=$kriteria['id_kriteria'];?>" min="0" max="100">
+                        </div> -->
+                    <?php 
+                        // endforeach
+                        ?>
+                    <!-- </div> -->
+                    <div class="col-lg-4">
+                        <?php foreach ($dataKriteria as $key => $kriteria): ?>
+                        <div class="mb-3">
+                            <label for="<?= $kriteria['id_kriteria']; ?>"
+                                class="form-label"><?= $kriteria['nama_kriteria']; ?></label>
+                            <select class="form-control" id="<?= $kriteria['id_kriteria']; ?>"
+                                name="<?= $kriteria['id_kriteria']; ?>">
+                                <option value="">-- Pilih --</option>
+                                <option value="1">1 - Tidak Penting</option>
+                                <option value="2">2 - Kurang Penting</option>
+                                <option value="3">3 - Penting</option>
+                                <option value="4">4 - Sangat Penting</option>
+                            </select>
                         </div>
-                        <?php endforeach;?>
+                        <?php endforeach; ?>
                     </div>
                     <div class="col-lg-12 d-flex justify-content-center mb-5 mt-lg-5">
                         <a class="btn btn-danger me-2" href="./index.php">Kembali</a>

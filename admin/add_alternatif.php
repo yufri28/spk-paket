@@ -10,7 +10,6 @@ $dataKriteria = $Alternatif->getKriteria();
 
 // tambah alternatif
 if(isset($_POST['tambah'])){
-
     $dataKecAltKrit = [];
     
     foreach ($dataKriteria as $key => $value) {
