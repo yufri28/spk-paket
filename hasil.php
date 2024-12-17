@@ -47,6 +47,8 @@ if (isset($_POST['hasil-perengkingan'])) {
       $konsep_gedung = null;  
       $dataBobotKriteria = [];
       $w = [];
+      $dataTampungBobotKriteria = [];
+
       // Sanitize and cast inputs
       if(isset($_POST['konsep_gedung'])){
         $konsep_gedung = htmlspecialchars($_POST['konsep_gedung']);
@@ -59,6 +61,25 @@ if (isset($_POST['hasil-perengkingan'])) {
         array_push($w, $dataBobotKriteria['C'.$i] / array_sum($dataBobotKriteria));
       }
 
+      foreach ($data_kriteria as $key => $krit) {
+        
+        switch ($_POST[$krit['id_kriteria']]) {
+          case 1:
+              $temp_konvert_bobot = 'Tidak Penting';
+            break;
+          case 2:
+              $temp_konvert_bobot = 'Kurang Penting';
+            break;
+          case 3:
+              $temp_konvert_bobot = 'Penting';
+            break;
+          case 4:
+              $temp_konvert_bobot = 'Sangat Penting';
+            break;
+        }
+
+        $dataTampungBobotKriteria[$krit['nama_kriteria']] = $temp_konvert_bobot;
+      }
     
     //-- inisialisasi variabel array alternatif , dan jumlah alternatif
     $alternatif = array();
@@ -78,7 +99,6 @@ if (isset($_POST['hasil-perengkingan'])) {
         // Store entire row data as details
         $detail[] = $row;
     }
-
     
     // $n_subject = count($alternatif);
     $n_subject = $data->num_rows;
@@ -315,6 +335,11 @@ if (isset($_POST['hasil-perengkingan'])) {
             <!-- List of Cards -->
             <div class="col-12">
                 <a class="btn btn-danger" href="./pembobotan.php">Kembali Pembobotan</a>
+                <div class="inputan-kriteria mb-3">
+                    <?php foreach ($dataTampungBobotKriteria as $key => $value):?>
+                    <strong><?=$key;?> : <?=$value?> | </strong>
+                    <?php endforeach;?>
+                </div>
                 <h2 class="text-center"> Hasil
                     Perangkingan
                     Paket Resepsi Pernikahan</h2>
