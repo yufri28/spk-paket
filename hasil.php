@@ -339,6 +339,7 @@ if (isset($_POST['hasil-perengkingan'])) {
                     <?php foreach ($dataTampungBobotKriteria as $key => $value):?>
                     <strong><?=$key;?> : <?=$value?> | </strong>
                     <?php endforeach;?>
+                    <strong> Konsep gedung : <?=$konsep_gedung??'Tidak dipilih'?></strong>
                 </div>
                 <h2 class="text-center"> Hasil
                     Perangkingan
